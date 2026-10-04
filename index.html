@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astra JSON Studio</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-main: #050505;
+            --panel-bg: #0a0a0a;
+            --border-color: #222222;
+            --border-focus: #444444;
+            --text-primary: #ededed;
+            --text-secondary: #737373;
+            --btn-bg: #121212;
+            --btn-hover: #1f1f1f;
+            --btn-border: #2a2a2a;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 1300px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .brand-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+
+        .brand-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .editor-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 850px) {
+            .editor-container { grid-template-columns: 1fr; }
+        }
+
+        .pane {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .pane-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pane-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 480px;
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            line-height: 1.6;
+            resize: vertical;
+            transition: border-color 0.15s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--border-focus);
+        }
+
+        textarea::placeholder {
+            color: #333333;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+            align-items: center;
+        }
+
+        .btn {
+            background-color: var(--btn-bg);
+            border: 1px solid var(--btn-border);
+            color: var(--text-primary);
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--btn-hover);
+            border-color: #444444;
+        }
+
+        .btn-primary {
+            background-color: #ffffff;
+            color: #000000;
+            border-color: #ffffff;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background-color: #e5e5e5;
+            border-color: #e5e5e5;
+        }
+
+        .btn-danger {
+            color: var(--danger);
+            border-color: rgba(239, 68, 68, 0.2);
+            background-color: rgba(239, 68, 68, 0.05);
+        }
+
+        .btn-danger:hover {
+            background-color: rgba(239, 68, 68, 0.15);
+            border-color: var(--danger);
+        }
+
+        .spacer {
+            margin-left: auto;
+        }
+
+        .status-bar {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            min-height: 20px;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <header>
+            <div class="brand-title">ASTRA / JSON STUDIO</div>
+            <div class="brand-subtitle">Minimal Workspace</div>
+        </header>
+
+        <div class="editor-container">
+            <!-- Input Pane -->
+            <div class="pane">
+                <div class="pane-header">
+                    <span class="pane-label">Input JSON</span>
+                </div>
+                <textarea id="json-input" placeholder='Enter or paste your JSON data here...&#10;{&#10;  "project": "Astra Studio",&#10;  "status": "Active"&#10;}' spellcheck="false"></textarea>
+            </div>
+
+            <!-- Output Pane -->
+            <div class="pane">
+                <div class="pane-header">
+                    <span class="pane-label">Output Result</span>
+                </div>
+                <textarea id="json-output" readonly placeholder="Output will appear here..." spellcheck="false"></textarea>
+            </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <button class="btn" onclick="prettifyJSON()">Format / Prettify</button>
+            <button class="btn" onclick="minifyJSON()">Minify</button>
+            <button class="btn" onclick="jsonToXML()">JSON ➔ XML</button>
+            <button class="btn" onclick="jsonToCSV()">JSON ➔ CSV</button>
+            <button class="btn" onclick="validateJSON()">Validate</button>
+            
+            <button class="btn btn-primary spacer" onclick="downloadFile()">Download File</button>
+            <button class="btn" onclick="copyOutput()">Copy Output</button>
+            <button class="btn btn-danger" onclick="clearAll()">Clear</button>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar" id="status-msg"></div>
+    </div>
+
+    <script>
+        function showStatus(msg, type) {
+            const el = document.getElementById('status-msg');
+            el.innerText = msg;
+            el.style.color = type === 'error' ? 'var(--danger)' : (type === 'success' ? 'var(--success)' : 'var(--text-secondary)');
+        }
+
+        function prettifyJSON() {
+            try {
+                const input = document.getElementById('json-input').value;
+                if (!input.trim()) return showStatus('Input is empty.', 'error');
+                const obj = JSON.parse(input);
+                document.getElementById('json-output').value = JSON.stringify(obj, null, 2);
+                showStatus('✓ Formatted successfully', 'success');
+            } catch (e) {
+                showStatus('✕ JSON Error: ' + e.message, 'error');
+            }
+        }
+
+        function minifyJSON() {
+            try {
+                const input = document.getElementById('json-input').value;
+                if (!input.trim()) return showStatus('Input is empty.', 'error');
+                const obj = JSON.parse(input);
+                document.getElementById('json-output').value = JSON.stringify(obj);
+                showStatus('✓ Minified successfully', 'success');
+            } catch (e) {
+                showStatus('✕ JSON Error: ' + e.message, 'error');
+            }
+        }
+
+        function parseToXML(obj) {
+            let xml = '';
+            for (let prop in obj) {
+                if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+                    let val = obj[prop];
+                    let tagName = isNaN(prop) ? prop : 'item';
+                    
+                    if (typeof val === 'object' && val !== null) {
+                        xml += `<${tagName}>` + parseToXML(val) + `</${tagName}>`;
+                    } else {
+                        let safeVal = String(val)
+                            .replace(/&/g, '&amp;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;');
+                        xml += `<${tagName}>${safeVal}</${tagName}>`;
+                    }
+                }
+            }
+            return xml;
+        }
+
+        function jsonToXML() {
+            try {
+                const input = document.getElementById('json-input').value;
+                if (!input.trim()) return showStatus('Input is empty.', 'error');
+                const obj = JSON.parse(input);
+                
+                let xmlResult = '<?xml version="1.0" encoding="UTF-8"?>\n<root>\n' + parseToXML(obj) + '\n</root>';
+                document.getElementById('json-output').value = xmlResult;
+                showStatus('✓ Converted to XML', 'success');
+            } catch (e) {
+                showStatus('✕ XML Conversion Error: ' + e.message, 'error');
+            }
+        }
+
+        function jsonToCSV() {
+            try {
+                const input = document.getElementById('json-input').value;
+                if (!input.trim()) return showStatus('Input is empty.', 'error');
+                let obj = JSON.parse(input);
+                if (!Array.isArray(obj)) obj = [obj];
+                if (obj.length === 0) return showStatus('JSON array is empty.', 'error');
+                
+                const headers = Object.keys(obj[0]);
+                const csvRows = [headers.join(',')];
+                
+                for (const row of obj) {
+                    const values = headers.map(header => {
+                        const val = row[header] === undefined || row[header] === null ? '' : row[header];
+                        return `"${String(val).replace(/"/g, '""')}"`;
+                    });
+                    csvRows.push(values.join(','));
+                }
+                
+                document.getElementById('json-output').value = csvRows.join('\n');
+                showStatus('✓ Converted to CSV', 'success');
+            } catch (e) {
+                showStatus('✕ CSV Conversion Error: ' + e.message, 'error');
+            }
+        }
+
+        function validateJSON() {
+            try {
+                const input = document.getElementById('json-input').value;
+                if (!input.trim()) return showStatus('Input is empty.', 'error');
+                JSON.parse(input);
+                showStatus('✓ Valid JSON syntax', 'success');
+            } catch (e) {
+                showStatus('✕ Invalid JSON: ' + e.message, 'error');
+            }
+        }
+
+        function copyOutput() {
+            const output = document.getElementById('json-output');
+            if (!output.value) return showStatus('Nothing to copy.', 'error');
+            navigator.clipboard.writeText(output.value);
+            showStatus('✓ Copied to clipboard', 'success');
+        }
+
+        function downloadFile() {
+            const output = document.getElementById('json-output').value;
+            if (!output.trim()) return showStatus('No content to download.', 'error');
+            
+            let extension = 'txt';
+            let mimeType = 'text/plain';
+            if (output.trim().startsWith('<?xml') || output.trim().startsWith('<root>')) {
+                extension = 'xml';
+                mimeType = 'application/xml';
+            } else if (output.trim().startsWith('{') || output.trim().startsWith('[')) {
+                extension = 'json';
+                mimeType = 'application/json';
+            } else {
+                extension = 'csv';
+                mimeType = 'text/csv';
+            }
+
+            const blob = new Blob([output], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `astra-output.${extension}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showStatus(`✓ Downloaded .${extension} file`, 'success');
+        }
+
+        function clearAll() {
+            document.getElementById('json-input').value = '';
+            document.getElementById('json-output').value = '';
+            document.getElementById('status-msg').innerText = '';
+        }
+    </script>
+</body>
+</html>
