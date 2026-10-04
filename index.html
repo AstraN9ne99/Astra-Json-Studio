@@ -4,24 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Astra JSON Studio</title>
+    
+    <!-- Custom Dark Favicon ({ } JSON icon) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%230a0a0c'/><text x='50%' y='68%' font-family='monospace' font-weight='700' font-size='55' fill='%23ffffff' text-anchor='middle'>{ }</text></svg>">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-main: #050505;
-            --panel-bg: #0a0a0a;
-            --border-color: #222222;
-            --border-focus: #444444;
-            --text-primary: #ededed;
-            --text-secondary: #737373;
-            --btn-bg: #121212;
-            --btn-hover: #1f1f1f;
-            --btn-border: #2a2a2a;
+            --bg-main: #0a0a0c;
+            --panel-bg: #121215;
+            --border-color: #2e2e35;
+            --border-focus: #666677;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --btn-bg: #18181c;
+            --btn-hover: #26262e;
+            --btn-border: #383842;
             --success: #10b981;
-            --danger: #ef4444;
+            --danger: #f87171;
         }
 
         * {
@@ -59,16 +63,44 @@
 
         .brand-title {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.95rem;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            color: #ffffff;
         }
 
         .brand-subtitle {
-            font-size: 0.8rem;
+            font-size: 0.82rem;
             color: var(--text-secondary);
             font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Minimal Social Link Badge */
+        .x-link {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 7px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--panel-bg);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .x-link span {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .x-link:hover {
+            color: #ffffff;
+            border-color: #555566;
+            background-color: var(--btn-hover);
+            transform: translateY(-1px);
         }
 
         .editor-container {
@@ -79,6 +111,7 @@
 
         @media (max-width: 850px) {
             .editor-container { grid-template-columns: 1fr; }
+            header { flex-direction: column; align-items: flex-start; gap: 12px; }
         }
 
         .pane {
@@ -95,8 +128,9 @@
 
         .pane-label {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #ffffff;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
@@ -106,30 +140,32 @@
             min-height: 480px;
             background-color: var(--panel-bg);
             border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 16px;
-            color: var(--text-primary);
+            border-radius: 8px;
+            padding: 18px;
+            color: #ffffff;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.82rem;
+            font-size: 0.88rem;
+            font-weight: 500;
             line-height: 1.6;
             resize: vertical;
-            transition: border-color 0.15s ease;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
         }
 
         textarea:focus {
             outline: none;
             border-color: var(--border-focus);
+            box-shadow: 0 0 0 1px var(--border-focus);
         }
 
         textarea::placeholder {
-            color: #333333;
+            color: #888899;
         }
 
         .toolbar {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            padding-top: 16px;
+            gap: 10px;
+            padding-top: 18px;
             border-top: 1px solid var(--border-color);
             align-items: center;
         }
@@ -137,42 +173,42 @@
         .btn {
             background-color: var(--btn-bg);
             border: 1px solid var(--btn-border);
-            color: var(--text-primary);
-            padding: 8px 14px;
+            color: #ffffff;
+            padding: 9px 16px;
             border-radius: 6px;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.78rem;
-            font-weight: 500;
+            font-size: 0.8rem;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.15s ease;
         }
 
         .btn:hover {
             background-color: var(--btn-hover);
-            border-color: #444444;
+            border-color: #555566;
         }
 
         .btn-primary {
             background-color: #ffffff;
             color: #000000;
             border-color: #ffffff;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .btn-primary:hover {
-            background-color: #e5e5e5;
-            border-color: #e5e5e5;
+            background-color: #e2e2e8;
+            border-color: #e2e2e8;
         }
 
         .btn-danger {
-            color: var(--danger);
-            border-color: rgba(239, 68, 68, 0.2);
-            background-color: rgba(239, 68, 68, 0.05);
+            color: #ff6b6b;
+            border-color: rgba(255, 107, 107, 0.3);
+            background-color: rgba(255, 107, 107, 0.08);
         }
 
         .btn-danger:hover {
-            background-color: rgba(239, 68, 68, 0.15);
-            border-color: var(--danger);
+            background-color: rgba(255, 107, 107, 0.2);
+            border-color: #ff6b6b;
         }
 
         .spacer {
@@ -181,8 +217,9 @@
 
         .status-bar {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.78rem;
-            min-height: 20px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            min-height: 22px;
             color: var(--text-secondary);
         }
     </style>
@@ -191,8 +228,15 @@
 
     <div class="wrapper">
         <header>
-            <div class="brand-title">ASTRA / JSON STUDIO</div>
-            <div class="brand-subtitle">Minimal Workspace</div>
+            <div>
+                <div class="brand-title">ASTRA / JSON STUDIO</div>
+                <div class="brand-subtitle">Minimal Workspace</div>
+            </div>
+            
+            <!-- X Profile Link Badge -->
+            <a href="https://x.com/AstraN9ne99" target="_blank" rel="noopener noreferrer" class="x-link">
+                Follow <span>@AstraN9ne99</span> on 𝕏 ↗
+            </a>
         </header>
 
         <div class="editor-container">
